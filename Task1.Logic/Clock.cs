@@ -14,9 +14,6 @@ namespace Task1.Logic
         public event EventHandler<TimeOutArgs> TimeOutChange = delegate { };
         
         #region Properties
-        /// <summary>
-        /// 
-        /// </summary>
         public int Hours
         {
             get
@@ -32,10 +29,7 @@ namespace Task1.Logic
                 }
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        
         public int Minutes
         {
             get
@@ -55,10 +49,7 @@ namespace Task1.Logic
 
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        
         public int Seconds
         {
             get
@@ -81,11 +72,13 @@ namespace Task1.Logic
 
         #region Public methods
         /// <summary>
-        /// 
+        /// Sets clock on time hours:minutes:seconds and stars clock
         /// </summary>
         /// <param name="hours"></param>
         /// <param name="minutes"></param>
         /// <param name="seconds"></param>
+        /// <exception cref="ArgumentException"> When one or more parrams less than 0 </exception>
+        /// <exception cref="ArgumentException"> When all params = 0 </exception>
         public void SetClock(int seconds = 0, int minutes = 0, int hours = 0)
         {
             if (hours == 0 && minutes == 0 && seconds == 0)
@@ -98,18 +91,6 @@ namespace Task1.Logic
             Seconds = seconds;
 
             Start();
-        }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public void ResetClock()
-        {
-            Hours = DEFAULT;
-            Minutes = DEFAULT;
-            Seconds = DEFAULT;
-
-            OnTimeOutChange(this, new TimeOutArgs(Hours, Minutes, Seconds));
         }
         #endregion
 
