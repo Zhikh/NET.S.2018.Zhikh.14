@@ -108,9 +108,13 @@ namespace Task1.Logic
 
             do
             {
-                if (--Seconds == 0)
+                if (Seconds == 0)
                 {
                     isStop = ResetSeconds();
+                }
+                else
+                {
+                    Seconds--;
                 }
             }
             while (!isStop);
