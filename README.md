@@ -1,8 +1,9 @@
 # NET.S.2018.Zhikh.14
 Tasks for day 14
 ### Task1
-Разработать класс для имитации часов с обратным отсчетом, реализующий возможность по истечении назначенного времени (время ожидания предоставляется классу пользователем) передавать сообщение и дополнительную информацию о событии любому подписавшемуся на событие типу. Предусмотреть возможность подписки на событие в нескольких классах. Продемонстрировать работу класса в консольном приложении.
+Develop a class to simulate a clock with a countdown that implements the capability after the assigned time (waiting time is granted to the class by the user) to transmit a message and additional information about the event to any subscriber who subscribes to the event. Provide the possibility of subscribing to an event in several classes. Demonstrate the operation of the class in the console application.
+- [additional (observer pattern)](https://github.com/Zhikh/Drafts/blob/master/Patterns/Observer.cs)
 ### Task2 
-Реализовать обобщенный алгоритм бинарного поиска. Разработать unit-тесты.
+Implement a generic binary search algorithm. Develop unit-tests.
 ### Task3
-Реализовать метод-генератор последовательности чисел Фибоначчи. Разработать unit-тесты.
+Implement the Fibonacci number generator method. Develop unit-tests.
