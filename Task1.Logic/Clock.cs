@@ -12,12 +12,7 @@ namespace Task1.Logic
         private int _seconds;
 
         public event EventHandler<TimeOutArgs> TimeOutChange = delegate { };
-
-        public Clock()
-        {
-            ResetClock();
-        }
-
+        
         #region Properties
         /// <summary>
         /// 
@@ -55,8 +50,8 @@ namespace Task1.Logic
                     throw new ArgumentException(nameof(Minutes) + " cant't be less than 0!");
                 }
 
-                Hours += value / MAX_TICK;
-                _minutes = value % MAX_TICK;
+                Hours += value / ( MAX_TICK + 1);
+                _minutes = value % ( MAX_TICK + 1);
 
             }
         }
@@ -78,8 +73,8 @@ namespace Task1.Logic
                     throw new ArgumentException(nameof(Minutes) + " cant't be less than 0!");
                 }
 
-                Minutes += value / MAX_TICK;
-                _seconds = value % MAX_TICK;
+                Minutes += value / (MAX_TICK + 1);
+                _seconds = value % (MAX_TICK + 1);
             }
         }
         #endregion
@@ -91,10 +86,8 @@ namespace Task1.Logic
         /// <param name="hours"></param>
         /// <param name="minutes"></param>
         /// <param name="seconds"></param>
-        public void SetClock(int hours = 0, int minutes = 0, int seconds = 0)
+        public void SetClock(int seconds = 0, int minutes = 0, int hours = 0)
         {
-            ResetClock();
-
             if (hours == 0 && minutes == 0 && seconds == 0)
             {
                 throw new ArgumentException("Also one parametr should be set!");
@@ -161,11 +154,11 @@ namespace Task1.Logic
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
         #endregion
     }

@@ -4,6 +4,12 @@ namespace Task1.Logic
 {
     public class TimeOutArgs : EventArgs
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hours"></param>
+        /// <param name="minutes"></param>
+        /// <param name="seconds"></param>
         public TimeOutArgs(int hours, int minutes, int seconds)
         {
             if (hours < 0)
@@ -21,7 +27,7 @@ namespace Task1.Logic
                 throw new ArgumentException($"The parametr {nameof(seconds)} can't consist negative value!");
             }
 
-            Message = $"Timer is on {nameof(hours)} : {nameof(minutes)} : {nameof(seconds)}.";
+            Message = $"Timer is on {hours} : {minutes} : {seconds}.";
         }
 
         public string Message { get; set; }
