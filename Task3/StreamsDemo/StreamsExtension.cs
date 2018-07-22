@@ -47,7 +47,6 @@ namespace StreamsDemo
 
         public static int ByBlockCopy(string sourcePath, string destinationPath)
         {
-           // int bufferSize = 1024 * 64;
             int result = 0;
 
             using (FileStream sourceStream = File.OpenRead(sourcePath),
@@ -114,14 +113,30 @@ namespace StreamsDemo
             return bytesCount;
         }
 
-        #region TODO: Implement by line copy logic using FileStream and classes text-adapters StreamReader/StreamWriter
-
         public static int ByLineCopy(string sourcePath, string destinationPath)
         {
-            throw new NotImplementedException();
-        }
+            InputValidation(sourcePath, destinationPath);
 
-        #endregion
+            int stringsAmount = 0;
+            string text = string.Empty;
+
+            using (TextReader reader = File.OpenText(sourcePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    text += line;
+                    stringsAmount++;
+                }
+            }
+
+            using (TextWriter writer = File.CreateText(destinationPath))
+            {
+                writer.WriteLine();
+            }
+
+            return stringsAmount;
+        }
         
         public static bool IsContentEquals(string sourcePath, string destinationPath)
         {
