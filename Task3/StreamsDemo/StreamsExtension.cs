@@ -28,14 +28,14 @@ namespace StreamsDemo
 
             byte[] array;
             
-            using (FileStream sourceFlStream = File.OpenRead(sourcePath), 
-                destinationFlStream = File.OpenWrite(destinationPath))
+            using (FileStream reader = File.OpenRead(sourcePath), 
+                writer = File.OpenWrite(destinationPath))
             {
-                array = new byte[sourceFlStream.Length];
+                array = new byte[reader.Length];
 
-                sourceFlStream.Read(array, 0, array.Length);
+                reader.Read(array, 0, array.Length);
                 
-                destinationFlStream.Write(array, 0, array.Length);
+                writer.Write(array, 0, array.Length);
             }
 
             return array.Length;
@@ -51,9 +51,8 @@ namespace StreamsDemo
         public static int InMemoryByByteCopy(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
-
-            string sourceData = ReadByStreamReader(sourcePath);
-            byte[] streamData = _encoding.GetBytes(sourceData);
+            
+            byte[] streamData = _encoding.GetBytes(ReadByStreamReader(sourcePath));
             char[] writeData = { };
 
             WriteInStream(streamData, writeData);
@@ -75,16 +74,16 @@ namespace StreamsDemo
 
             int result = 0;
 
-            using (FileStream sourceStream = File.OpenRead(sourcePath),
-                destinationStream = File.OpenWrite(destinationPath))
+            using (FileStream reader = File.OpenRead(sourcePath),
+                writer = File.OpenWrite(destinationPath))
             {
-                destinationStream.SetLength(sourceStream.Length);
+                writer.SetLength(reader.Length);
                 
                 byte[] bytes = new byte[_bufferSize];
                 int bytesRead;
-                while ((bytesRead = sourceStream.Read(bytes, 0, _bufferSize)) > 0)
+                while ((bytesRead = reader.Read(bytes, 0, _bufferSize)) > 0)
                 {
-                    destinationStream.Write(bytes, 0, bytesRead);
+                    writer.Write(bytes, 0, bytesRead);
                     result += bytesRead;
                 }
             }
@@ -137,16 +136,16 @@ namespace StreamsDemo
             InputValidation(sourcePath, destinationPath);
 
             int bytesCount = 0;
-            using (FileStream fileStream = File.OpenRead(sourcePath),
-                destinationStream = File.OpenWrite(destinationPath))
+            using (FileStream reader = File.OpenRead(sourcePath),
+                writer = File.OpenWrite(destinationPath))
             {
                 byte[] sourceData = new byte[_bufferSize];
-                using (var buffer = new BufferedStream(fileStream, _bufferSize))
+                using (var buffer = new BufferedStream(reader, _bufferSize))
                 {
                     int bytesRead;
                     while ((bytesRead = buffer.Read(sourceData, 0, _bufferSize)) > 0)
                     {
-                        destinationStream.Write(sourceData, 0, bytesRead);
+                        writer.Write(sourceData, 0, bytesRead);
                         bytesCount += bytesRead;
                     }
                 }
