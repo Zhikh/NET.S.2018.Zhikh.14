@@ -11,11 +11,7 @@ namespace StreamsDemo
 
     public static class StreamsExtension
     {
-
         #region Public members
-
-        #region TODO: Implement by byte copy logic using class FileStream as a backing store stream .
-
         public static int ByByteCopy(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
@@ -36,50 +32,17 @@ namespace StreamsDemo
             return array.Length;
         }
 
-        #endregion
-
-        #region TODO: Implement by byte copy logic using class MemoryStream as a backing store stream.
-
         public static int InMemoryByByteCopy(string sourcePath, string destinationPath)
         {
-            string sourceData = string.Empty;
+            string sourceData = ReadByStreamReader(sourcePath);
+            byte[] streamData = Encoding.Unicode.GetBytes(sourceData);
+            char[] writeData = { };
 
-            using (var streamReader = new StreamReader(sourcePath, Encoding.Default))
-            {
-                sourceData = streamReader.ReadToEnd();
-            }
-
-            byte[] streamData =  Encoding.Default.GetBytes(sourceData);
-
-            char[] writeData;
-            using (var memoryStream = new MemoryStream())
-            {
-                memoryStream.Write(streamData, 0, streamData.Length);
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                
-                byte[] buffer = new byte[memoryStream.Length];
-                int count = memoryStream.Read(buffer, 0, 20);
-
-                while (count < memoryStream.Length)
-                {
-                    buffer[count++] = Convert.ToByte(memoryStream.ReadByte());
-                }
-
-                var uniEncoding = new UnicodeEncoding();
-                writeData = new char[uniEncoding.GetCharCount(buffer, 0, count)];
-                uniEncoding.GetDecoder().GetChars(buffer, 0, count, writeData, 0);
-            }
-
-            using (var streamWriter = new StreamWriter(destinationPath, false, Encoding.Default))
-            {
-                streamWriter.Write(writeData);
-            }
+            ConvertByteArrayByMemoryStream(streamData, writeData);
+            WriteByStreamWriter(destinationPath, writeData);
 
             return streamData.Length;
         }
-
-        #endregion
 
         #region TODO: Implement by block copy logic using FileStream buffer.
 
@@ -132,7 +95,6 @@ namespace StreamsDemo
         #endregion
 
         #region Private members
-
         private static string GetContent(string path)
         {
             string result = string.Empty;
@@ -146,7 +108,46 @@ namespace StreamsDemo
             return result;
         }
 
-        #region Validation logic
+        private static void ConvertByteArrayByMemoryStream(byte[] streamData, char[] writeData)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                memoryStream.Write(streamData, 0, streamData.Length);
+
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                byte[] buffer = new byte[memoryStream.Length];
+                int count = memoryStream.Read(buffer, 0, 20);
+
+                while (count < memoryStream.Length)
+                {
+                    buffer[count++] = Convert.ToByte(memoryStream.ReadByte());
+                }
+
+                var encorder = new UnicodeEncoding();
+                writeData = new char[encorder.GetCharCount(buffer, 0, count)];
+                encorder.GetDecoder().GetChars(buffer, 0, count, writeData, 0);
+            }
+        }
+
+        private static void WriteByStreamWriter(string destinationPath, char[] writeData)
+        {
+            using (var streamWriter = new StreamWriter(destinationPath, false, Encoding.Unicode))
+            {
+                streamWriter.Write(writeData);
+            }
+        }
+
+        private static string ReadByStreamReader(string sourcePath)
+        {
+            string sourceData;
+            using (var streamReader = new StreamReader(sourcePath, Encoding.Unicode))
+            {
+                sourceData = streamReader.ReadToEnd();
+            }
+
+            return sourceData;
+        }
 
         private static void InputValidation(string sourcePath, string destinationPath)
         {
@@ -160,9 +161,6 @@ namespace StreamsDemo
                 throw new FileNotFoundException(nameof(destinationPath));
             }
         }
-
-        #endregion
-
         #endregion
 
     }
