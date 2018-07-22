@@ -24,6 +24,12 @@ namespace ConsoleClient
             Console.WriteLine($"BufferedCopy() done. Total bytes: {BufferedCopy(source, destination)}");
             Console.WriteLine(IsContentEquals(source, destination));
 
+            Console.WriteLine($"ByLineCopy() done. Total strings: {ByLineCopy(source, destination)}");
+            Console.WriteLine(IsContentEquals(source, destination));
+
+            Console.WriteLine($"InMemoryByBlockCopy() done. Total bytes: {InMemoryByBlockCopy(source, destination)}");
+            Console.WriteLine(IsContentEquals(source, destination));
+
             Console.ReadKey();
         }
     }
