@@ -11,6 +11,8 @@ namespace StreamsDemo
 
     public static class StreamsExtension
     {
+        private static readonly int _bufferSize = 1024;
+
         #region Public members
         public static int ByByteCopy(string sourcePath, string destinationPath)
         {
@@ -45,7 +47,7 @@ namespace StreamsDemo
 
         public static int ByBlockCopy(string sourcePath, string destinationPath)
         {
-            int bufferSize = 1024 * 64;
+           // int bufferSize = 1024 * 64;
             int result = 0;
 
             using (FileStream sourceStream = File.OpenRead(sourcePath),
@@ -53,9 +55,9 @@ namespace StreamsDemo
             {
                 destinationStream.SetLength(sourceStream.Length);
                 
-                byte[] bytes = new byte[bufferSize];
+                byte[] bytes = new byte[_bufferSize];
                 int bytesRead;
-                while ((bytesRead = sourceStream.Read(bytes, 0, bufferSize)) > 0)
+                while ((bytesRead = sourceStream.Read(bytes, 0, _bufferSize)) > 0)
                 {
                     destinationStream.Write(bytes, 0, bytesRead);
                     result += bytesRead;
@@ -69,20 +71,48 @@ namespace StreamsDemo
 
         public static int InMemoryByBlockCopy(string sourcePath, string destinationPath)
         {
-            // TODO: Use InMemoryByByteCopy method's approach
-            throw new NotImplementedException();
+            //string sourceData = ReadByStreamReader(sourcePath);
+            //byte[] streamData = Encoding.Unicode.GetBytes(sourceData);
+            //char[] writeData = { };
+
+            //ConvertByteArrayByMemoryStream(streamData, writeData);
+            //WriteByStreamWriter(destinationPath, writeData);
+
+            //byte[] block = new byte[OxlOOO]; // блоками no 4 Кбайт.
+            //MemoryStream ms = new MemoryStream();
+            //while (true)
+            //{
+            //    int bytesRead = input.Read(block, 0, block.Length);
+            //    if (bytesRead == 0) return ms;
+            //    ms.Write(block, 0, bytesRead);
+            //}
+
+            return 0;
         }
 
         #endregion
-
-        #region TODO: Implement by block copy logic using class-decorator BufferedStream.
 
         public static int BufferedCopy(string sourcePath, string destinationPath)
         {
-            throw new NotImplementedException();
-        }
+            int bytesCount = 0;
+            using (FileStream fileStream = File.OpenRead(sourcePath),
+                destinationStream = File.OpenWrite(destinationPath))
+            {
+                byte[] sourceData = new byte[_bufferSize];
+                using (var buffer = new BufferedStream(fileStream, _bufferSize))
+                {
+                    int bytesRead;
+                    while ((bytesRead = buffer.Read(sourceData, 0, _bufferSize)) > 0)
+                    {
+                        destinationStream.Write(sourceData, 0, bytesRead);
+                        bytesCount += bytesRead;
+                    }
+                }
 
-        #endregion
+            }
+
+            return bytesCount;
+        }
 
         #region TODO: Implement by line copy logic using FileStream and classes text-adapters StreamReader/StreamWriter
 
