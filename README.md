@@ -6,4 +6,6 @@ Develop a class to simulate a clock with a countdown that implements the capabil
 ### Task2 
 Implement a generic binary search algorithm. Develop unit-tests.
 ### Task3
+Streams and IO
+### Task4
 Implement the Fibonacci number generator method. Develop unit-tests.
