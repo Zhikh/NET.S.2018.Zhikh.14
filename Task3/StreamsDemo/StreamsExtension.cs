@@ -24,8 +24,7 @@ namespace StreamsDemo
                 array = new byte[sourceFlStream.Length];
 
                 sourceFlStream.Read(array, 0, array.Length);
-
-               // destinationFlStream.Seek(0, SeekOrigin.End);
+                
                 destinationFlStream.Write(array, 0, array.Length);
             }
 
@@ -44,14 +43,27 @@ namespace StreamsDemo
             return streamData.Length;
         }
 
-        #region TODO: Implement by block copy logic using FileStream buffer.
-
         public static int ByBlockCopy(string sourcePath, string destinationPath)
         {
-            throw new NotImplementedException();
-        }
+            int bufferSize = 1024 * 64;
+            int result = 0;
 
-        #endregion
+            using (FileStream sourceStream = File.OpenRead(sourcePath),
+                destinationStream = File.OpenWrite(destinationPath))
+            {
+                destinationStream.SetLength(sourceStream.Length);
+                
+                byte[] bytes = new byte[bufferSize];
+                int bytesRead;
+                while ((bytesRead = sourceStream.Read(bytes, 0, bufferSize)) > 0)
+                {
+                    destinationStream.Write(bytes, 0, bytesRead);
+                    result += bytesRead;
+                }
+            }
+
+            return result;
+        }
 
         #region TODO: Implement by block copy logic using MemoryStream.
 
@@ -80,18 +92,13 @@ namespace StreamsDemo
         }
 
         #endregion
-
-        #region TODO: Implement content comparison logic of two files 
-
+        
         public static bool IsContentEquals(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
             
             return GetContent(sourcePath) == GetContent(destinationPath);
         }
-
-        #endregion
-
         #endregion
 
         #region Private members
@@ -102,7 +109,7 @@ namespace StreamsDemo
             {
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
-                result = Encoding.ASCII.GetString(array);
+                result = Encoding.Unicode.GetString(array);
             }
 
             return result;
