@@ -15,12 +15,19 @@ namespace StreamsDemo
         private static readonly Encoding _encoding = Encoding.Unicode;
 
         #region Public members
+        /// <summary>
+        /// Copy data from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Bytes count </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int ByByteCopy(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
 
             byte[] array;
-
+            
             using (FileStream sourceFlStream = File.OpenRead(sourcePath), 
                 destinationFlStream = File.OpenWrite(destinationPath))
             {
@@ -34,8 +41,17 @@ namespace StreamsDemo
             return array.Length;
         }
 
+        /// <summary>
+        /// Copy data from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Bytes count </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int InMemoryByByteCopy(string sourcePath, string destinationPath)
         {
+            InputValidation(sourcePath, destinationPath);
+
             string sourceData = ReadByStreamReader(sourcePath);
             byte[] streamData = _encoding.GetBytes(sourceData);
             char[] writeData = { };
@@ -46,8 +62,17 @@ namespace StreamsDemo
             return streamData.Length;
         }
 
+        /// <summary>
+        /// Copy data by block from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Bytes count </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int ByBlockCopy(string sourcePath, string destinationPath)
         {
+            InputValidation(sourcePath, destinationPath);
+
             int result = 0;
 
             using (FileStream sourceStream = File.OpenRead(sourcePath),
@@ -67,8 +92,17 @@ namespace StreamsDemo
             return result;
         }
 
+        /// <summary>
+        /// Copy data by block from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Bytes count </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int InMemoryByBlockCopy(string sourcePath, string destinationPath)
         {
+            InputValidation(sourcePath, destinationPath);
+
             int bytesCount = 0;
             char[] writeData = { };
 
@@ -91,8 +125,17 @@ namespace StreamsDemo
             return bytesCount;
         }
 
+        /// <summary>
+        /// Copy data by BufferedStream from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Bytes count </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int BufferedCopy(string sourcePath, string destinationPath)
         {
+            InputValidation(sourcePath, destinationPath);
+
             int bytesCount = 0;
             using (FileStream fileStream = File.OpenRead(sourcePath),
                 destinationStream = File.OpenWrite(destinationPath))
@@ -113,11 +156,18 @@ namespace StreamsDemo
             return bytesCount;
         }
 
+        /// <summary>
+        /// Copy data by line from file by sourcePath in file by destinationPath
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Lines amount </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static int ByLineCopy(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
 
-            int stringsAmount = 0;
+            int stringsCount = 0;
             string text = string.Empty;
 
             using (TextReader reader = File.OpenText(sourcePath))
@@ -126,7 +176,7 @@ namespace StreamsDemo
                 while ((line = reader.ReadLine()) != null)
                 {
                     text += line;
-                    stringsAmount++;
+                    stringsCount++;
                 }
             }
 
@@ -135,9 +185,16 @@ namespace StreamsDemo
                 writer.WriteLine();
             }
 
-            return stringsAmount;
+            return stringsCount;
         }
-        
+
+        /// <summary>
+        /// Compare data from files
+        /// </summary>
+        /// <param name="sourcePath"> File path </param>
+        /// <param name="destinationPath"> File path  </param>
+        /// <returns> Result of comparing </returns>
+        /// <exception cref="FileNotFoundException"> When one of passes is uncorrect or file doesn't exist</exception>
         public static bool IsContentEquals(string sourcePath, string destinationPath)
         {
             InputValidation(sourcePath, destinationPath);
