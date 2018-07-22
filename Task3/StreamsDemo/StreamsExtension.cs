@@ -12,6 +12,7 @@ namespace StreamsDemo
     public static class StreamsExtension
     {
         private static readonly int _bufferSize = 1024;
+        private static readonly Encoding _encoding = Encoding.Unicode;
 
         #region Public members
         public static int ByByteCopy(string sourcePath, string destinationPath)
@@ -36,10 +37,10 @@ namespace StreamsDemo
         public static int InMemoryByByteCopy(string sourcePath, string destinationPath)
         {
             string sourceData = ReadByStreamReader(sourcePath);
-            byte[] streamData = Encoding.Unicode.GetBytes(sourceData);
+            byte[] streamData = _encoding.GetBytes(sourceData);
             char[] writeData = { };
 
-            ConvertByteArrayByMemoryStream(streamData, writeData);
+            WriteInStream(streamData, writeData);
             WriteByStreamWriter(destinationPath, writeData);
 
             return streamData.Length;
@@ -66,30 +67,29 @@ namespace StreamsDemo
             return result;
         }
 
-        #region TODO: Implement by block copy logic using MemoryStream.
-
         public static int InMemoryByBlockCopy(string sourcePath, string destinationPath)
         {
-            //string sourceData = ReadByStreamReader(sourcePath);
-            //byte[] streamData = Encoding.Unicode.GetBytes(sourceData);
-            //char[] writeData = { };
+            int bytesCount = 0;
+            char[] writeData = { };
 
-            //ConvertByteArrayByMemoryStream(streamData, writeData);
-            //WriteByStreamWriter(destinationPath, writeData);
+            using (var reader = new StreamReader(sourcePath, _encoding))
+            {
+                char[] streamData = new char[_bufferSize];
 
-            //byte[] block = new byte[OxlOOO]; // блоками no 4 Кбайт.
-            //MemoryStream ms = new MemoryStream();
-            //while (true)
-            //{
-            //    int bytesRead = input.Read(block, 0, block.Length);
-            //    if (bytesRead == 0) return ms;
-            //    ms.Write(block, 0, bytesRead);
-            //}
+                int charsRead = reader.Read(streamData, 0, streamData.Length);
+                byte[] block = _encoding.GetBytes(streamData);
+                int bytesRead = block.Length;
+                if (bytesRead != 0)
+                {
+                    bytesCount += bytesRead;
+                    WriteInStream(block, writeData);
+                }
+            }
 
-            return 0;
+            WriteByStreamWriter(destinationPath, writeData);
+
+            return bytesCount;
         }
-
-        #endregion
 
         public static int BufferedCopy(string sourcePath, string destinationPath)
         {
@@ -154,37 +154,37 @@ namespace StreamsDemo
             {
                 byte[] array = new byte[fileStream.Length];
                 fileStream.Read(array, 0, array.Length);
-                result = Encoding.Unicode.GetString(array);
+                result =_encoding.GetString(array);
             }
 
             return result;
         }
 
-        private static void ConvertByteArrayByMemoryStream(byte[] streamData, char[] writeData)
+        private static void WriteInStream(byte[] sourceData, char[] data)
         {
-            using (var memoryStream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
-                memoryStream.Write(streamData, 0, streamData.Length);
+                stream.Write(sourceData, 0, sourceData.Length);
 
-                memoryStream.Seek(0, SeekOrigin.Begin);
+                stream.Seek(0, SeekOrigin.Begin);
 
-                byte[] buffer = new byte[memoryStream.Length];
-                int count = memoryStream.Read(buffer, 0, 20);
+                byte[] buffer = new byte[stream.Length];
+                int count = stream.Read(buffer, 0, 20);
 
-                while (count < memoryStream.Length)
+                while (count < stream.Length)
                 {
-                    buffer[count++] = Convert.ToByte(memoryStream.ReadByte());
+                    buffer[count++] = Convert.ToByte(stream.ReadByte());
                 }
 
                 var encorder = new UnicodeEncoding();
-                writeData = new char[encorder.GetCharCount(buffer, 0, count)];
-                encorder.GetDecoder().GetChars(buffer, 0, count, writeData, 0);
+                data = new char[encorder.GetCharCount(buffer, 0, count)];
+                encorder.GetDecoder().GetChars(buffer, 0, count, data, 0);
             }
         }
 
         private static void WriteByStreamWriter(string destinationPath, char[] writeData)
         {
-            using (var streamWriter = new StreamWriter(destinationPath, false, Encoding.Unicode))
+            using (var streamWriter = new StreamWriter(destinationPath, false, _encoding))
             {
                 streamWriter.Write(writeData);
             }
@@ -193,7 +193,7 @@ namespace StreamsDemo
         private static string ReadByStreamReader(string sourcePath)
         {
             string sourceData;
-            using (var streamReader = new StreamReader(sourcePath, Encoding.Unicode))
+            using (var streamReader = new StreamReader(sourcePath, _encoding))
             {
                 sourceData = streamReader.ReadToEnd();
             }
