@@ -14,10 +14,10 @@ namespace Task2.Logic
         /// <param name="value"> Value for searching </param>
         /// <returns> Index of value in array </returns>
         /// <exception cref="ArgumentNullException"> When array or comparer are null </exception>
-        public static int Search<T>(T value, params T[] array) where T : IComparable<T>
-        {
-            return 0;
-        }
+        //public static int Search<T>(T value, params T[] array) where T : IComparable<T>
+        //{
+        //    return 0;
+        //}
 
         /// <summary>
         /// Gets array of T and element for searching 
