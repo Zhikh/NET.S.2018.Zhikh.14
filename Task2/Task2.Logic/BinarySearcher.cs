@@ -3,17 +3,18 @@ using System.Collections.Generic;
 
 namespace Task2.Logic
 {
-    public class BinarySearcher<T> : ISearchStrategy<T>
+    public static class BinarySearcher
     {
         /// <summary>
-        /// Gets array of T and element for searching 
+        /// Gets sorted array of T and element for searching 
         /// and using binary searching find position of value in array
         /// </summary>
-        /// <param name="array"> Unsorted/sorted array (it's not matter) </param>
+        /// <param name="array"> Sorted array (it's not matter) </param>
+        /// <param name="comparer"> Rules for comparing </param>
         /// <param name="value"> Value for searching </param>
         /// <returns> Index of value in array </returns>
         /// <exception cref="ArgumentNullException"> When array or comparer are null </exception>
-        public int SearchByBinary(T[] array, T value, IComparer<T> comparer)
+        public static int SearchByBinary<T>(T[] array, T value, IComparer<T> comparer)
         {
             if (array == null)
             {
@@ -61,6 +62,35 @@ namespace Task2.Logic
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Gets sorted array of T and element for searching 
+        /// and using binary searching find position of value in array
+        /// </summary>
+        /// <param name="array"> Sorted array (it's not matter) </param>
+        /// <param name="compare"> Rules for comparing </param>
+        /// <param name="value"> Value for searching </param>
+        /// <returns> Index of value in array </returns>
+        /// <exception cref="ArgumentNullException"> When array or comparer are null </exception>
+        public static int SearchByBinary<T>(T[] array, T value, Comparison<T> compare)
+        {
+            return SearchByBinary(array, value, new Nested<T>(compare));
+        }
+
+        private class Nested<T> : IComparer<T>
+        {
+            private Comparison<T> _compareMethod;
+
+            public Nested(Comparison<T> compare)
+            {
+                _compareMethod = compare;
+            }
+
+            public int Compare(T left, T right)
+            {
+                return _compareMethod(left, right);
+            }
         }
     }
 }
