@@ -6,26 +6,7 @@ namespace Task4.Logic
 {
     public static class FibonacciGenerator
     {
-        private static IEnumerable<BigInteger> GenerateSequence(int count)
-        {
-            BigInteger preElement = 1;
-            BigInteger prePreElement = 0;
-            BigInteger element;
-
-            yield return preElement;
-
-            for (int i = 0; i < count - 1; i++)
-            {
-                element = BigInteger.Add(prePreElement, preElement);
-
-                yield return element;
-
-                prePreElement = preElement;
-                preElement = element;
-            }
-        }
-
-
+        #region Public methods
         /// <summary>
         /// Find Fibonacci's sequence
         /// </summary>
@@ -46,5 +27,27 @@ namespace Task4.Logic
 
             return GenerateSequence(count);
         }
+        #endregion
+
+        #region Private methods
+        private static IEnumerable<BigInteger> GenerateSequence(int count)
+        {
+            BigInteger preElement = 1;
+            BigInteger prePreElement = 0;
+            BigInteger element;
+
+            yield return preElement;
+
+            for (int i = 0; i < count - 1; i++)
+            {
+                element = BigInteger.Add(prePreElement, preElement);
+
+                yield return element;
+
+                prePreElement = preElement;
+                preElement = element;
+            }
+        }
+        #endregion
     }
 }
