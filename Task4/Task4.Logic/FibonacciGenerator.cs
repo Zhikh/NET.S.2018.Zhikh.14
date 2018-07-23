@@ -1,24 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace Task4.Logic
 {
     public static class FibonacciGenerator
     {
-        private static readonly double _sqrtFromFive;
-
-        static FibonacciGenerator()
+        private static IEnumerable<BigInteger> GenerateSequence(int count)
         {
-            _sqrtFromFive = Math.Sqrt(5);
+            BigInteger preElement = 1;
+            BigInteger prePreElement = 0;
+            BigInteger element;
+
+            yield return preElement;
+
+            for (int i = 0; i < count - 1; i++)
+            {
+                element = BigInteger.Add(prePreElement, preElement);
+
+                yield return element;
+
+                prePreElement = preElement;
+                preElement = element;
+            }
         }
 
+
         /// <summary>
-        /// Find Fibonacci's sequence from start index to index = count - 1
+        /// Find Fibonacci's sequence
         /// </summary>
-        /// <param name="startIndex"> Degree of Binet value </param>
         /// <param name="count"> Length of sequence</param>
         /// <returns> Sequence </returns>
         /// <exception cref="ArgumentException"> When count is less or is zero </exception>
-        public static int[] Generate(int startIndex, int count)
+        public static IEnumerable<BigInteger> Generate(int count)
         {
             if (count < 0)
             {
@@ -30,31 +44,7 @@ namespace Task4.Logic
                 throw new ArgumentException($"The parameter {nameof(count)} can't be zero!");
             }
 
-            int[] array = new int[count];
-            double firstExpression = (1 + _sqrtFromFive) / 2;
-            double secondExpression = (1 - _sqrtFromFive) / 2;
-
-            int sign;
-            int index;
-            for (int i = 0; i < count; i++)
-            {
-                sign = 1;
-                index = startIndex;
-
-                if (startIndex < 0)
-                {
-                    index *= -1;
-                    if (index % 2 == 0)
-                    {
-                        sign = -1;
-                    }
-                }
-
-                array[i] = sign * (int)((Math.Pow(firstExpression, index) - Math.Pow(secondExpression, index)) / _sqrtFromFive);
-                startIndex++;
-            }
-
-            return array;
+            return GenerateSequence(count);
         }
     }
 }
