@@ -14,7 +14,7 @@ namespace Task2.Logic
         /// <param name="value"> Value for searching </param>
         /// <returns> Index of value in array </returns>
         /// <exception cref="ArgumentNullException"> When array or comparer are null </exception>
-        public static int SearchByBinary<T>(T[] array, T value, IComparer<T> comparer)
+        public static int Search<T>(T[] array, T value, IComparer<T> comparer)
         {
             if (array == null)
             {
@@ -75,7 +75,7 @@ namespace Task2.Logic
         /// <exception cref="ArgumentNullException"> When array or comparer are null </exception>
         public static int SearchByBinary<T>(T[] array, T value, Comparison<T> compare)
         {
-            return SearchByBinary(array, value, new Nested<T>(compare));
+            return Search(array, value, new Nested<T>(compare));
         }
 
         private class Nested<T> : IComparer<T>
